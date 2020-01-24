@@ -1,0 +1,94 @@
+﻿@model laboratornayASP_net.Models.Comment
+@{
+    Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Comment</title>
+</head>
+<body>
+
+
+    <h2 class="text-center">Отзовы</h2>
+    @if (User.Identity.IsAuthenticated)
+    {
+
+        <form method="post" asp-controller="Home" asp-action="Comment"
+              asp-anti-forgery="true">
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <div class="form-group">
+                <label asp-for="UserName">Введите имя:</label><br />
+                <div class="col-md-3">
+                    <input asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName"></span>
+                </div>
+            </div>
+            <input type="hidden" asp-for="CommentDate" />
+            <br />
+            <br />
+            <div class="form-group">
+                <label asp-for="CommentText">Введите текст:</label><br />
+                <div class="col-md-3">
+                    <textarea asp-for="CommentText" class="form-control" rows="5" cols="40" ></textarea>
+                    <span asp-validation-for="CommentText"></span>
+                </div>
+
+            </div>
+            <br />
+            <br />
+            <br />
+            <br />
+
+            <input class="btn btn-danger" type="submit" value="Отправить" />
+
+        </form>
+    }
+    else
+    {
+        <p>
+            Добавление комментания могут совершать только зарегистрированые пользователи
+            <a asp-controller="Home" asp-action="Register">Зарегистрироваться</a>
+            или
+            <a asp-controller="Home" asp-action="Login">Войти</a>
+        </p>
+
+    }
+    <h3>Все записи</h3>
+    @foreach (var comment in ViewBag.Comments)
+    {
+        
+        <div style="background-color:yellow;color:black; padding:3px; margin:5px;">
+            <p>@comment.CommentText</p>
+            <p>Добавил(а) <b>@comment.UserName</b>. Дата: @comment.CommentDate</p>
+
+        </div>
+        @if ( User.Identity.Name == "admin")
+        {
+
+            <a asp-controller="Home" asp-action="HideComment" asp-route-id="@comment.Id">
+                @if (comment.Hidden)
+                {
+                    <span>Показать</span>
+                }
+                else
+                {
+                    <span>Скрыть</span>
+                }
+            </a>
+
+            <a asp-controller="Home" asp-action="DeleteComment" asp-route-id="@comment.Id">Удалить </a>
+            <a asp-controller="Home" asp-action="EditComment" asp-route-id="@comment.Id">Правка </a>
+
+        }
+
+    }
+
+
+
+</body>
+</html>
